@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const Multer_1 = require("../Middleware/Multer");
+const product_controller_1 = require("../controller/product.controller");
+const router = (0, express_1.Router)();
+router.route("/add-voice").post(Multer_1.upload.single("audio"), product_controller_1.createProductFromVoice);
+router.route("/add").post(Multer_1.upload.single("picture"), product_controller_1.createProduct);
+router.route("/get").get(product_controller_1.getProducts);
+router.route("/order").post(product_controller_1.buyProduct);
+router.route("/getproduct/:productId").get(product_controller_1.getProduct);
+router.route("/search").get(product_controller_1.searchProduct);
+router.route("/getnearestproducts/:userId").get(product_controller_1.getNearestProducts);
+exports.default = router;

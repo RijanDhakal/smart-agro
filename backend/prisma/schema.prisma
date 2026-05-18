@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum OrderStatus {
+  ORDERED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+}
+
+model user {
+  userId    String  @id @default(uuid())
+  username  String
+  contact   String  @unique
+  gmail     String?
+  order     order[]
+  longitude Float?
+  latitude  Float?
+}
+
+model farmer {
+  farmerID          String    @id @default(uuid())
+  username          String
+  contact           String    @unique
+  address           String
+  gmail             String
+  verified          Boolean   @default(false)
+  citizenShip_front String?
+  citizenShip_back  String?
+  products          product[]
+  longitude         Float?
+  latitude          Float?
+}
+
+model product {
+  productId        String  @id @default(uuid())
+  productName      String
+  productImage     String  @default("")
+  price            String
+  quantity         String
+  description      String
+  seller           farmer  @relation(fields: [sellerId], references: [farmerID])
+  sellerId         String
+  expectedLifeSpan String?
+  order            order[]
+}
+
+model order {
+  orderId       String      @id @default(uuid())
+  productId     String
+  userId        String
+  PaymentMethod String
+  orderStatus   OrderStatus
+  quantity      Int
+  address       String
+  Product       product?    @relation(fields: [productId], references: [productId])
+  user          user?       @relation(fields: [userId], references: [userId])
+}
+
+model address {
+  addressId  String @id @default(uuid())
+  province   String
+  district   String
+  localLevel String
+  street     String
+  costumerId String
+}

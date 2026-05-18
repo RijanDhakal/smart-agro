@@ -40,12 +40,6 @@ const speechToText = async (audioFile) => {
             },
             maxBodyLength: Infinity,
         });
-        try {
-            fs_1.default.unlinkSync(audioFile.path);
-        }
-        catch (e) {
-            console.warn("Failed to delete temp file:", e);
-        }
         return response.data.text;
     }
     catch (err) {
@@ -57,6 +51,9 @@ const speechToText = async (audioFile) => {
             statusCode: err.response?.status || 500,
             message: `Speech-to-text failed: ${apiMsg}`,
         });
+    }
+    finally {
+        fs_1.default.unlinkSync(audioFile.path);
     }
 };
 // Gemini text enhancer + JSON manager

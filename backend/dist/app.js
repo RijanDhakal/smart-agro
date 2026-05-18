@@ -4,12 +4,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const path_1 = __importDefault(require("path"));
 const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, cors_1.default)({
-    origin: "*",
+    origin: true,
+    credentials: true,
 }));
 // Route import
 const ApiVersion = "/api/v1";
@@ -18,4 +20,10 @@ const products_route_1 = __importDefault(require("./router/products.route"));
 // router declaration
 app.use(`${ApiVersion}/users`, user_route_1.default);
 app.use(`${ApiVersion}/products`, products_route_1.default);
+// Serve frontend build
+const root = process.cwd();
+app.use(express_1.default.static(path_1.default.join(root, "frontend-dist")));
+app.get("*", (req, res) => {
+    res.sendFile(path_1.default.join(root, "frontend-dist", "index.html"));
+});
 exports.default = app;

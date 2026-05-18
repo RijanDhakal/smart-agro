@@ -25,7 +25,7 @@ app.use(`${ApiVersion}/products`, productRouter);
 // Serve frontend build
 const root = process.cwd();
 app.use(express.static(path.join(root, "frontend-dist")));
-app.get("*", (req, res) => {
+app.get("/*w", (req, res) => {
   res.sendFile(path.join(root, "frontend-dist", "index.html"));
 });
 
